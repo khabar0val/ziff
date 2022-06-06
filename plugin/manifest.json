@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+    "name": "ZiffNet Plugin",
+    "version": "0.1.0",
+    "description": "Сохраняет понравившиеся посты, статьи, аудио и видео файлы у вас локально на устройстве и в ZiffNet",
+    "icons": {
+        "128": "meme1.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [ "<all_urls>" ],
+            "js": [ "index.js" ]
+        }
+    ]
+ }
