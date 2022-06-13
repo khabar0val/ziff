@@ -1,30 +1,34 @@
-const http = require("http");
-const mysql = require("mysql2");
-  
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "ziffdb",
-  password: "NfnmzyfKhabarova1979#@!"
+const express = require("express");
+const MongoClient = require("mongodb").MongoClient;
+const objectId = require("mongodb").ObjectId;
+   
+const app = express();
+const jsonParser = express.json();
+ 
+// создаем объект MongoClient и передаем ему строку подключения
+const mongoClient = new MongoClient("mongodb://localhost:27017/");
+
+mongoClient.connect(function(err, client){
+  if(err) return console.log(err);
+  dbClient = client;
+  app.locals.collection = client.db("ziffdb").collection("posts");
+  app.listen(3000, function(){
+      console.log("Сервер ожидает подключения...");
+  });
 });
 
-connection.connect(function(err){
-    if (err) {
-      return console.error("Ошибка: " + err.message);
-    }
-    else{
-      console.log("Подключение к серверу MySQL успешно установлено");
-    }
- });
 
-http.createServer(function(request, response) {
-    if (request.url == "/post") {
-        console.log("Post is successful")
-    }
-
-    else {
-        response.statusCode = 404; // адрес не найден
-        response.write("Not Found");
-    }
-
-}).listen(3000);
+app.post("/post", jsonParser, function (req, res) {
+       
+  if(!req.body) return res.sendStatus(400);
+     
+  const url = req.body.url;
+  const post = {url: url};
+     
+  const collection = req.app.locals.collection;
+  collection.insertOne(post, function(err, result){
+             
+      if(err) return console.log(err);
+      res.send(post);
+  });
+});
