@@ -1,0 +1,1 @@
+add_user_query = "INSERT INTO users (username, password) VALUES (?, ?)"
